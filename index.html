@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>App Shell</title>
+    <link rel="manifest" href="/manifest.json">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel='stylesheet' type='text/css' href='styles/materialize.min.css'>
+    <link rel='stylesheet' type='text/css' href='styles/justifiedGallery.min.css'>
+    <link rel="stylesheet" type="text/css" href="styles/inline.css">
+
+    <script src='scripts/jquery-3.2.1.min.js'></script>
+    <script src='scripts/materialize.min.js'></script>
+    <script src='scripts/event-handler.js'></script>
+    <script src='scripts/dexie.js'></script>
+    <script src='scripts/jquery.justifiedGallery.min.js'></script>
+</head>
+
+<body>
+    <nav>
+        <div class="nav-wrapper">
+            <a href="#!" class="brand-logo">Welcome</a>
+            <a href="#" data-activates="mobile-menu" id='sidenav--button' class="button-collapse"><i class="material-icons">menu</i></a>
+            <ul class="right hide-on-med-and-down">
+                <li><a href="#flickr">Flickr</a></li>
+                <li><a href="#about">About</a></li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+            <ul class="side-nav" id="mobile-menu">
+                <li>
+                    <div class='user-view'>
+                        <div class='background'>
+                            <img src='images/space.jpg'/>
+                        </div>
+                        <a href="#!user"><img class="circle" src="images/me.jpg"></a>
+                        <a href="#!name"><span class="white-text name">Brian Zimmerman</span></a>
+                    </div>
+                </li>
+                <li><a href="#flickr">Flickr</a></li>
+                <li><a href="#about">About</a></li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class='content'></div>
+
+    <div class='no-pictures' hidden>
+        <p>There are no pictures.  Try adding a tag.</p>
+    </div>
+
+    <div id='flickrGallery' hidden></div>
+    <a class='imageTemplate' hidden>
+        <img class='image' />
+    </a>
+
+    <div class='loader'>
+        <svg viewBox="0 0 32 32" width="32" height="32">
+            <circle id="spinner" cx="16" cy="16" r="14" fill="none"></circle>
+        </svg>
+    </div>
+
+    <script src="scripts/app.js" async></script>
+</body>
+
+</html>
