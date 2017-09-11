@@ -9,7 +9,8 @@
         container: document.querySelector('.content'),
         db: new Dexie('tags'),
         gallerySelector: '#flickrGallery',
-        about: document.querySelector('.aboutTemplate')
+        about: document.querySelector('.aboutTemplate'),
+        contact: document.querySelector('.contactTemplate')
     }
 
     app.showNoPictures = () => {
@@ -79,6 +80,16 @@
             app.setLoading(false);
     };
 
+    app.loadContact = function() {
+        let contact = app.contact.cloneNode(true);
+        contact.classList.remove('contactTemplate');
+        contact.removeAttribute('hidden');
+        app.container.innerHTML = '';
+        app.container.appendChild(contact);
+        if(app.isLoading)
+            app.setLoading(false);
+    };
+
     app.updatePage = () => {
         let hash = window.location.hash;
         if(hash === '')
@@ -89,8 +100,8 @@
                 app.loadFlickr();
             else if(hash == 'about')
                 app.loadAbout();
-            else if(hash == 'contact');
-                //TODO
+            else if(hash == 'contact')
+                app.loadContact();
         }
     };
 
@@ -100,8 +111,8 @@
         app.selectedLocations.push(city.name);
     });
 
-    window.addEventListener('hashchange', app.updatePage());
-
+    window.addEventListener('hashchange', app.updatePage);
+    
     app.updatePage();
-
+    
 })();
