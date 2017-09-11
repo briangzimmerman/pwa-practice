@@ -8,7 +8,8 @@
         noPics: document.querySelector('.no-pictures'),
         container: document.querySelector('.content'),
         db: new Dexie('tags'),
-        gallerySelector: '#flickrGallery'
+        gallerySelector: '#flickrGallery',
+        about: document.querySelector('.aboutTemplate')
     }
 
     app.showNoPictures = () => {
@@ -68,6 +69,16 @@
         $.ajax(options);
     };
 
+    app.loadAbout = function(){
+        let about = app.about.cloneNode(true);
+        about.classList.remove('aboutTemplate');
+        about.removeAttribute('hidden');
+        app.container.innerHTML = '';
+        app.container.appendChild(about);
+        if(app.isLoading)
+            app.setLoading(false);
+    };
+
     app.updatePage = () => {
         let hash = window.location.hash;
         if(hash === '')
@@ -76,8 +87,8 @@
             hash = hash.substr(1);
             if(hash == 'flickr')
                 app.loadFlickr();
-            else if(hash == 'about');
-                //TODO
+            else if(hash == 'about')
+                app.loadAbout();
             else if(hash == 'contact');
                 //TODO
         }
