@@ -10,12 +10,17 @@
         db: new Dexie('tags'),
         gallerySelector: '#flickrGallery',
         about: document.querySelector('.aboutTemplate'),
-        contact: document.querySelector('.contactTemplate')
+        contact: document.querySelector('.contactTemplate'),
+        addButton: document.querySelector('.addTemplate')
     }
 
     app.showNoPictures = () => {
         let card = app.noPics.cloneNode(true);
+        let addButton = app.addButton.cloneNode(true);
+        card.classList.remove('no-pictures');
+        addButton.classList.remove('addTemplate');
         card.removeAttribute('hidden');
+        card.appendChild(addButton);
         app.container.innerHTML = '';
         app.container.appendChild(card);
         if(app.isLoading)

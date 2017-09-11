@@ -98,3 +98,14 @@
                   stroke-dashoffset: -65.973;
                   -webkit-transform: rotate(90deg);
                           transform: rotate(90deg); } }
+
+.addTemplate {
+  display: none;
+}
+
+.addButton {
+  position: absolute;
+  margin: 15px;
+  bottom: 0;
+  right: 0;
+}
