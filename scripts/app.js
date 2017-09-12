@@ -11,20 +11,32 @@
         gallerySelector: '#flickrGallery',
         about: document.querySelector('.aboutTemplate'),
         contact: document.querySelector('.contactTemplate'),
-        addButton: document.querySelector('.addTemplate')
+        addButtonTemplate: document.querySelector('.addTemplate'),
+        addButton: document.querySelector('.addButton'),
+        tagDialog: document.querySelector('.dialog-container'),
+        tagText: document.querySelector('#tagToAdd')
     }
 
     app.showNoPictures = () => {
         let card = app.noPics.cloneNode(true);
-        let addButton = app.addButton.cloneNode(true);
+        let addButton = app.addButtonTemplate.cloneNode(true);
         card.classList.remove('no-pictures');
         addButton.classList.remove('addTemplate');
+        addButton.addEventListener('click', app.toggleTagDialog);
         card.removeAttribute('hidden');
         card.appendChild(addButton);
         app.container.innerHTML = '';
         app.container.appendChild(card);
         if(app.isLoading)
             app.setLoading(false);
+    };
+
+    app.toggleTagDialog = function() {
+        if(app.tagDialog.hasAttribute('hidden')) {
+            app.tagDialog.removeAttribute('hidden');
+            app.tagText.focus();
+        } else
+            app.tagDialog.setAttribute('hidden', true);
     };
 
     app.loadFlickr = function() {
@@ -117,6 +129,10 @@
     });
 
     window.addEventListener('hashchange', app.updatePage);
+    app.tagDialog.addEventListener('click', function(e) {
+        if(!document.querySelector('.dialog').contains(e.target))
+            app.toggleTagDialog();
+    });
     
     app.updatePage();
     
