@@ -14,17 +14,17 @@
         addButtonTemplate: document.querySelector('.addTemplate'),
         addButton: document.querySelector('.addButton'),
         tagDialog: document.querySelector('.dialog-container'),
-        tagText: document.querySelector('#tagToAdd')
+        tagText: document.querySelector('#tagToAdd'),
+        gallerySettings: {
+            randomize: true,
+            lastRow: 'justify'
+        }
     }
 
     app.showNoPictures = () => {
         let card = app.noPics.cloneNode(true);
-        let addButton = app.addButtonTemplate.cloneNode(true);
         card.classList.remove('no-pictures');
-        addButton.classList.remove('addTemplate');
-        addButton.addEventListener('click', app.toggleTagDialog);
         card.removeAttribute('hidden');
-        card.appendChild(addButton);
         app.container.innerHTML = '';
         app.container.appendChild(card);
         if(app.isLoading)
@@ -42,8 +42,22 @@
     app.loadFlickr = function() {
         if(app.selectedTags.length == 0)
             app.showNoPictures();
-        else
-            app.getPicsByTags('"' + app.selectedTags.join('", ') + '"');
+        else {
+            let gallery = document.querySelector(app.gallerySelector);
+            if(gallery.innerHTML){
+                gallery = gallery.cloneNode(true);
+                gallery.removeAttribute('hidden');
+                app.container.innerHTML = '';
+                app.container.appendChild(gallery);
+                $(app.gallerySelector).justifiedGallery(app.gallerySettings);
+            } else
+                app.getPicsByTags('"' + app.selectedTags.join('", ') + '"');
+        }
+        let addButton = app.addButtonTemplate.cloneNode(true);
+        addButton.classList.remove('addTemplate');
+        addButton.addEventListener('click', app.toggleTagDialog);
+        app.container.appendChild(addButton);
+        console.log("YEAS");
     };
 
     app.setLoading = function(on) {
@@ -58,13 +72,13 @@
     };
 
     app.createCard = function(item){
-        let card = document.querySelector('.imageTemplate');
+        let card = document.querySelector('.imageTemplate').cloneNode(true);
         card.classList.remove('imageTemplate');
         card.setAttribute('href', item.link);
         card.querySelector('.image').setAttribute('alt', item.title);
         card.querySelector('.image').setAttribute('src', item.media.m);
         card.removeAttribute('hidden');
-        app.container.appendChild(card);
+        document.querySelector(app.gallerySelector).appendChild(card);
     }
 
     app.getPicsByTags = function(tags) {
@@ -79,11 +93,14 @@
                 response.items.map(function(item, idx) {
                     app.createCard(item);
                 });
+                let gallery = document.querySelector(app.gallerySelector).cloneNode(true);
+                gallery.removeAttribute('hidden');
+                app.container.innerHTML = '';
+                app.container.appendChild(gallery);
                 app.setLoading(false);
-                $(app.gallerySelector).justifiedGallery();
+                $(app.gallerySelector).justifiedGallery(app.gallerySettings);
             }
         };
-
         $.ajax(options);
     };
 
@@ -132,6 +149,16 @@
     app.tagDialog.addEventListener('click', function(e) {
         if(!document.querySelector('.dialog').contains(e.target))
             app.toggleTagDialog();
+    });
+    document.querySelector('#addTag').addEventListener('click', function() {
+        let tag = app.tagText.value.trim();
+        if(!app.selectedTags) { app.selectedTags = []; }
+        if(tag != '' && !app.selectedTags.includes(tag)) {
+            app.selectedTags.push(tag);
+            app.loadFlickr();
+            //app.saveTags(); //TODO write this function
+        }
+        app.toggleTagDialog();
     });
     
     app.updatePage();

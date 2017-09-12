@@ -1,6 +1,3 @@
 1. Make Manifest
 2. Make service worker
-3. Make card template
-4. Make about html
-5. Make contact html
 6. Look in cache for data
