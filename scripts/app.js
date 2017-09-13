@@ -27,8 +27,16 @@
         card.removeAttribute('hidden');
         app.container.innerHTML = '';
         app.container.appendChild(card);
+        app.addAddButton();
         if(app.isLoading)
             app.setLoading(false);
+    };
+
+    app.addAddButton = () => {
+        let addButton = app.addButtonTemplate.cloneNode(true);
+        addButton.classList.remove('addTemplate');
+        addButton.addEventListener('click', app.toggleTagDialog);
+        app.container.appendChild(addButton);
     };
 
     app.toggleTagDialog = function() {
@@ -43,21 +51,8 @@
         if(app.selectedTags.length == 0)
             app.showNoPictures();
         else {
-            let gallery = document.querySelector(app.gallerySelector);
-            if(gallery.innerHTML){
-                gallery = gallery.cloneNode(true);
-                gallery.removeAttribute('hidden');
-                app.container.innerHTML = '';
-                app.container.appendChild(gallery);
-                $(app.gallerySelector).justifiedGallery(app.gallerySettings);
-            } else
-                app.getPicsByTags('"' + app.selectedTags.join('", ') + '"');
+            app.getPicsByTags('"' + app.selectedTags.join('", ') + '"');
         }
-        let addButton = app.addButtonTemplate.cloneNode(true);
-        addButton.classList.remove('addTemplate');
-        addButton.addEventListener('click', app.toggleTagDialog);
-        app.container.appendChild(addButton);
-        console.log("YEAS");
     };
 
     app.setLoading = function(on) {
@@ -90,14 +85,18 @@
             jsonpCallback: 'jsonFlickrFeed',
             url: url,
             success: function(response){
+                console.debug(response);
+                let origGallery = document.querySelector(app.gallerySelector);
+                origGallery.innerHTML = '';
                 response.items.map(function(item, idx) {
                     app.createCard(item);
                 });
-                let gallery = document.querySelector(app.gallerySelector).cloneNode(true);
-                gallery.removeAttribute('hidden');
                 app.container.innerHTML = '';
-                app.container.appendChild(gallery);
+                let gallery = origGallery.cloneNode(true);
+                gallery.removeAttribute('hidden');
                 app.setLoading(false);
+                app.container.appendChild(gallery);
+                app.addAddButton();
                 $(app.gallerySelector).justifiedGallery(app.gallerySettings);
             }
         };

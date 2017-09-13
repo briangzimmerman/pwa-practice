@@ -104,7 +104,7 @@
 }
 
 .addButton {
-  position: absolute;
+  position: fixed;
   margin: 15px;
   bottom: 0;
   right: 0;
