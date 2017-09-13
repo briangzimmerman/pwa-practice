@@ -51,7 +51,7 @@
         if(app.selectedTags.length == 0)
             app.showNoPictures();
         else {
-            app.getPicsByTags('"' + app.selectedTags.join('", ') + '"');
+            app.getPicsByTags(app.selectedTags);
         }
     };
 
@@ -79,28 +79,28 @@
     app.getPicsByTags = function(tags) {
         app.setLoading(true);
         let url = 'https://api.flickr.com/services/feeds/photos_public.gne';
-        let options = {
-            data: {'tags': tags, 'format': 'json'},
-            dataType: 'jsonp',
-            jsonpCallback: 'jsonFlickrFeed',
-            url: url,
-            success: function(response){
-                console.debug(response);
-                let origGallery = document.querySelector(app.gallerySelector);
-                origGallery.innerHTML = '';
-                response.items.map(function(item, idx) {
-                    app.createCard(item);
-                });
-                app.container.innerHTML = '';
-                let gallery = origGallery.cloneNode(true);
-                gallery.removeAttribute('hidden');
-                app.setLoading(false);
-                app.container.appendChild(gallery);
-                app.addAddButton();
-                $(app.gallerySelector).justifiedGallery(app.gallerySettings);
-            }
-        };
-        $.ajax(options);
+        let originalGallery = document.querySelector('.originalGallery');
+        originalGallery.innerHTML = '';        
+        tags.forEach(function(tag) {
+            $.ajax({
+                data: {'tags': tag, 'format': 'json'},
+                dataType: 'jsonp',
+                jsonpCallback: 'jsonFlickrFeed',
+                url: url,
+                success: function(response){
+                    response.items.map(function(item, idx) {
+                        app.createCard(item);
+                    });
+                    let gallery = originalGallery.cloneNode(true);
+                    gallery.removeAttribute('hidden');
+                    app.setLoading(false);
+                    app.container.appendChild(gallery);
+                    app.addAddButton();
+                    $(app.gallerySelector).justifiedGallery(app.gallerySettings);
+                }
+            }); 
+        });
+        
     };
 
     app.loadAbout = function(){
