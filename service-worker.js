@@ -49,18 +49,9 @@ self.addEventListener('activate', (e) => {
 
 self.addEventListener('fetch', function (e) {
     console.log('[ServiceWorker] Fetch', e.request.url);
-    let url = 'https://api.flickr.com/services/feeds/photos_public.gne';
-    if (e.request.url.indexOf(dataUrl) > -1) {
-        e.respondWith(
-            caches.match(e.request).then(function (response) {
-                return response || fetch(e.request);
-            })
-        );
-    } else {
-        e.respondWith(
-            caches.match(e.request).then(function (response) {
-                return response || fetch(e.request);
-            })
-        );
-    }
+    e.respondWith(
+        caches.match(e.request).then(function (response) {
+            return response || fetch(e.request);
+        })
+    );
 });
