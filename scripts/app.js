@@ -141,8 +141,7 @@
     app.saveTags = () => {
         app.selectedTags.forEach((tag) => {
             app.db.tags.add({tag: tag})
-                .catch((e) => {console.log(e.message)})
-                .then(console.log('Successfully added:', tag));
+                .catch((e) => {console.log(e.message)});
         });
     };
 
@@ -162,11 +161,16 @@
         app.toggleTagDialog();
     });
 
+    if ('serviceWorker' in navigator) {
+        navigator.serviceWorker
+            .register('./scripts/service-worker.js')
+            .then(function () { console.log('Service Worker Registered'); });
+    }
+
     app.db = new Dexie('tags');
     app.db.version(1).stores({tags: '&tag'});
     app.db.open().then(() => {
         app.db.tags.each(function (tag) {
-            console.log('Pushing', tag.tag);
             app.selectedTags.push(tag.tag);
         }).then(() => { app.updatePage(); });
     });
