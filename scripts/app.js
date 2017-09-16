@@ -97,6 +97,9 @@
                     app.container.appendChild(gallery);
                     app.addAddButton();
                     $(app.gallerySelector).justifiedGallery(app.gallerySettings);
+                },
+                error: function() {
+                    app.showNoPictures
                 }
             }); 
         });

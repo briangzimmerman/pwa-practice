@@ -1,4 +1,4 @@
-let fileCacheName = 'pwa-practice-file-cache-1';
+let fileCacheName = 'pwa-practice-file-cache-3';
 let filesToCache = [
     '/',
     '/fonts/material-icons/MaterialIcons-Regular.ttf',
@@ -20,8 +20,6 @@ let filesToCache = [
     '/index.html'
 ];
 
-let dataCacheName = 'flickr-cache-1';
-
 self.addEventListener('install', (e) => {
     console.log('[Service Worker] Install');
     e.waitUntil(
@@ -37,7 +35,7 @@ self.addEventListener('activate', (e) => {
     e.waitUntil(
         caches.keys().then(function (keyList) {
             return Promise.all(keyList.map(function (key) {
-                if (key !== fileCacheName && key !== dataCacheName) {
+                if (key !== fileCacheName) {
                     console.log('[ServiceWorker] Removing old cache', key);
                     return caches.delete(key);
                 }
@@ -48,7 +46,6 @@ self.addEventListener('activate', (e) => {
 });
 
 self.addEventListener('fetch', function (e) {
-    console.log('[ServiceWorker] Fetch', e.request.url);
     e.respondWith(
         caches.match(e.request).then(function (response) {
             return response || fetch(e.request);
