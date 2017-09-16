@@ -7,7 +7,7 @@
         spinner: document.querySelector('.loader'),
         noPics: document.querySelector('.no-pictures'),
         container: document.querySelector('.content'),
-        db: new Dexie('tags'),
+        db: null,
         gallerySelector: '#flickrGallery',
         about: document.querySelector('.aboutTemplate'),
         contact: document.querySelector('.contactTemplate'),
@@ -138,11 +138,13 @@
         }
     };
 
-    app.db.version(1).stores({tags: 'tag'});
-    app.db.open();
-    app.db.tags.each(function(city) {
-        app.selectedLocations.push(city.name);
-    });
+    app.saveTags = () => {
+        app.selectedTags.forEach((tag) => {
+            app.db.tags.add({tag: tag})
+                .catch((e) => {console.log(e.message)})
+                .then(console.log('Successfully added:', tag));
+        });
+    };
 
     window.addEventListener('hashchange', app.updatePage);
     app.tagDialog.addEventListener('click', function(e) {
@@ -155,11 +157,17 @@
         if(tag != '' && !app.selectedTags.includes(tag)) {
             app.selectedTags.push(tag);
             app.loadFlickr();
-            //app.saveTags(); //TODO write this function
+            app.saveTags();
         }
         app.toggleTagDialog();
     });
-    
-    app.updatePage();
-    
+
+    app.db = new Dexie('tags');
+    app.db.version(1).stores({tags: '&tag'});
+    app.db.open().then(() => {
+        app.db.tags.each(function (tag) {
+            console.log('Pushing', tag.tag);
+            app.selectedTags.push(tag.tag);
+        }).then(() => { app.updatePage(); });
+    });
 })();
