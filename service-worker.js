@@ -20,6 +20,8 @@ let filesToCache = [
     '/index.html'
 ];
 
+let dataCacheName = 'flickr-cache-1';
+
 self.addEventListener('install', (e) => {
     console.log('[Service Worker] Install');
     e.waitUntil(
@@ -35,7 +37,7 @@ self.addEventListener('activate', (e) => {
     e.waitUntil(
         caches.keys().then(function (keyList) {
             return Promise.all(keyList.map(function (key) {
-                if (key !== fileCacheName) {
+                if (key !== fileCacheName && key !== dataCacheName) {
                     console.log('[ServiceWorker] Removing old cache', key);
                     return caches.delete(key);
                 }
@@ -45,11 +47,20 @@ self.addEventListener('activate', (e) => {
     return self.clients.claim();
 });
 
-self.addEventListener('fetch', function(e) {
+self.addEventListener('fetch', function (e) {
     console.log('[ServiceWorker] Fetch', e.request.url);
-    e.respondWith(
-        caches.match(e.request).then(function (response) {
-            return response || fetch(e.request);
-        })
-    );
+    let url = 'https://api.flickr.com/services/feeds/photos_public.gne';
+    if (e.request.url.indexOf(dataUrl) > -1) {
+        e.respondWith(
+            caches.match(e.request).then(function (response) {
+                return response || fetch(e.request);
+            })
+        );
+    } else {
+        e.respondWith(
+            caches.match(e.request).then(function (response) {
+                return response || fetch(e.request);
+            })
+        );
+    }
 });
